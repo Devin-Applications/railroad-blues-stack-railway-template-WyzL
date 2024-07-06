@@ -1,7 +1,6 @@
 import { json, LoaderFunction, ActionFunction, redirect } from "@remix-run/node";
 import { useLoaderData, Form, useActionData } from "@remix-run/react";
 import { getResource, updateResource } from "~/models/resource.server";
-import { requireUserId } from "~/session.server";
 
 interface LoaderData {
   resource: Awaited<ReturnType<typeof getResource>>;
@@ -58,6 +57,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function EditResourcePage() {
   const { resource } = useLoaderData<LoaderData>();
   const actionData = useActionData<ActionData>();
+
+  if (!resource) {
+    return <div>Resource not found</div>;
+  }
 
   return (
     <div>
