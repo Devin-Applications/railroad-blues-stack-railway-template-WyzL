@@ -1,24 +1,18 @@
-import type { User, Resource } from "@prisma/client";
-
 import { prisma } from "~/db.server";
 
 export type { Resource } from "@prisma/client";
 
 export function getResource({
   id,
-  userId,
-}: Pick<Resource, "id"> & {
-  userId: User["id"];
-}) {
+}: Pick<Resource, "id">) {
   return prisma.resource.findFirst({
     select: { id: true, name: true, description: true },
-    where: { id, userId },
+    where: { id },
   });
 }
 
-export function getResourceListItems({ userId }: { userId: User["id"] }) {
+export function getResourceListItems() {
   return prisma.resource.findMany({
-    where: { userId },
     select: { id: true, name: true },
     orderBy: { updatedAt: "desc" },
   });
@@ -27,19 +21,11 @@ export function getResourceListItems({ userId }: { userId: User["id"] }) {
 export function createResource({
   name,
   description,
-  userId,
-}: Pick<Resource, "name" | "description"> & {
-  userId: User["id"];
-}) {
+}: Pick<Resource, "name" | "description">) {
   return prisma.resource.create({
     data: {
       name,
       description,
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
     },
   });
 }
@@ -48,12 +34,9 @@ export function updateResource({
   id,
   name,
   description,
-  userId,
-}: Pick<Resource, "id" | "name" | "description"> & {
-  userId: User["id"];
-}) {
-  return prisma.resource.updateMany({
-    where: { id, userId },
+}: Pick<Resource, "id" | "name" | "description">) {
+  return prisma.resource.update({
+    where: { id },
     data: {
       name,
       description,
@@ -63,9 +46,8 @@ export function updateResource({
 
 export function deleteResource({
   id,
-  userId,
-}: Pick<Resource, "id"> & { userId: User["id"] }) {
-  return prisma.resource.deleteMany({
-    where: { id, userId },
+}: Pick<Resource, "id">) {
+  return prisma.resource.delete({
+    where: { id },
   });
 }

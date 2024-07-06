@@ -9,8 +9,7 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async () => {
-  // const userId = await requireUserId(request);
-  const resources = await getResourceListItems({ userId: "dummyUserId" });
+  const resources = await getResourceListItems();
   console.log("Fetched resources:", resources); // Debugging log
   return json<LoaderData>({ resources });
 };
